@@ -1,0 +1,411 @@
+/* =========================================================
+   SISTEMA DE DISENO: "ETIQUETA DE INVENTARIO"
+   Paleta: kraft / papel / cinta de seguridad / stamp
+   ========================================================= */
+
+:root {
+  --papel: #f4ecd9;
+  --papel-oscuro: #e8ddc3;
+  --tinta: #1d1a17;
+  --tinta-suave: #6b6255;
+  --amarillo: #f5c518;
+  --naranja: #e2552b;
+  --rojo: #c62f2f;
+  --verde: #2e7d4f;
+  --borde: #1d1a17;
+  --mono: "Courier New", Courier, "Liberation Mono", monospace;
+  --sans: "Helvetica Neue", Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html { font-size: 16px; }
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at 20% 10%, rgba(245, 197, 24, 0.08), transparent 40%),
+    repeating-linear-gradient(0deg, transparent 0 27px, rgba(29, 26, 23, 0.03) 27px 28px),
+    var(--papel);
+  color: var(--tinta);
+  font-family: var(--sans);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- Cinta de seguridad superior ---------- */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 10px;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--amarillo) 0 16px,
+    var(--tinta) 16px 32px
+  );
+  z-index: 10;
+}
+
+/* ---------- Cabecera ---------- */
+.cabecera {
+  border-bottom: 3px solid var(--borde);
+  background: rgba(244, 236, 217, 0.92);
+  padding: 2.4rem 1rem 1.6rem;
+}
+
+.cabecera__interior { max-width: 1100px; margin: 0 auto; }
+
+.cabecera__codigo {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.28em;
+  color: var(--naranja);
+  margin: 0 0 0.4rem;
+}
+
+.cabecera__titulo {
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0;
+}
+
+.cabecera__subtitulo {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--tinta-suave);
+  margin: 0.4rem 0 1.2rem;
+}
+
+.cabecera__subtitulo code,
+.pie code {
+  background: var(--papel-oscuro);
+  border: 1px dashed var(--tinta-suave);
+  padding: 0 0.3em;
+  font-size: 0.85em;
+}
+
+/* ---------- Resumen ---------- */
+.resumen {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.8rem;
+}
+
+.resumen__item {
+  background: var(--papel);
+  border: 2px solid var(--borde);
+  border-radius: 6px;
+  padding: 0.7rem 0.9rem;
+  box-shadow: 3px 3px 0 rgba(29, 26, 23, 0.25);
+  display: flex;
+  flex-direction: column;
+}
+
+.resumen__num {
+  font-family: var(--mono);
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.resumen__label {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--tinta-suave);
+}
+
+/* ---------- Contenido ---------- */
+.contenido {
+  flex: 1;
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1.6rem 1rem 2rem;
+}
+
+/* ---------- Panel de filtros ---------- */
+.panel-filtros {
+  background: var(--papel);
+  border: 2px solid var(--borde);
+  border-radius: 6px;
+  box-shadow: 4px 4px 0 rgba(29, 26, 23, 0.2);
+  padding: 1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.busqueda { display: flex; flex-direction: column; gap: 0.3rem; }
+
+.busqueda__label,
+.filtros__label {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--tinta-suave);
+}
+
+.busqueda__input {
+  font-family: var(--mono);
+  font-size: 0.95rem;
+  padding: 0.55rem 0.7rem;
+  border: 2px solid var(--borde);
+  border-radius: 4px;
+  background: #fffdf6;
+  color: var(--tinta);
+  outline: none;
+  transition: box-shadow 0.12s ease;
+}
+
+.busqueda__input:focus {
+  box-shadow: 0 0 0 3px rgba(245, 197, 24, 0.55);
+}
+
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.filtros__grupo { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+/* ---------- Botones de filtro ---------- */
+.btn-filtro {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  padding: 0.35rem 0.65rem;
+  border: 2px solid var(--borde);
+  border-radius: 4px;
+  background: #fffdf6;
+  color: var(--tinta);
+  cursor: pointer;
+  transition: transform 0.06s ease, background 0.12s ease;
+}
+
+.btn-filtro:hover { background: var(--papel-oscuro); }
+
+.btn-filtro:active { transform: translateY(1px); }
+
+.btn-filtro--activo {
+  background: var(--amarillo);
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.25);
+}
+
+/* ---------- Contador de resultados ---------- */
+.resultado {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--tinta-suave);
+  margin: 1.2rem 0 0.8rem;
+}
+
+.resultado strong { color: var(--tinta); }
+
+/* ---------- Grilla ---------- */
+.grilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.2rem;
+}
+
+/* ---------- Card (etiqueta) ---------- */
+.card {
+  position: relative;
+  background: #fffdf6;
+  border: 2px solid var(--borde);
+  border-radius: 8px;
+  padding: 1rem 1rem 0.9rem;
+  box-shadow: 4px 4px 0 rgba(29, 26, 23, 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 rgba(29, 26, 23, 0.22);
+}
+
+/* perforacion de agujero en la etiqueta */
+.card::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 8px;
+  background: var(--papel);
+  border: 2px solid var(--borde);
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+}
+
+/* borde punteado interior (dorso de etiqueta) */
+.card__interior {
+  border: 1.5px dashed rgba(29, 26, 23, 0.35);
+  border-radius: 5px;
+  padding: 0.7rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+/* ---------- Imagen ---------- */
+.card__imagen {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border: 2px solid var(--borde);
+  border-radius: 4px;
+  background: var(--papel-oscuro);
+  display: block;
+}
+
+.card__imagen--vacia {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  color: var(--tinta-suave);
+  text-transform: uppercase;
+}
+
+.card__codigo {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  color: var(--naranja);
+  margin: 0;
+}
+
+.card__nombre {
+  font-size: 1.05rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.card__descripcion {
+  font-size: 0.82rem;
+  color: var(--tinta-suave);
+  margin: 0;
+}
+
+.card__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: auto;
+}
+
+.card__precio {
+  font-family: var(--mono);
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.card__categoria {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--tinta-suave);
+  border: 1.5px solid rgba(29, 26, 23, 0.4);
+  border-radius: 3px;
+  padding: 0.15rem 0.4rem;
+}
+
+/* ---------- Stock ---------- */
+.card__stock {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  padding: 0.3rem 0.5rem;
+  border-radius: 3px;
+  border: 2px solid var(--borde);
+  align-self: flex-start;
+}
+
+.card__stock--ok { background: #dcebd9; color: var(--verde); }
+.card__stock--bajo { background: #f9e3a4; color: #8a6100; }
+.card__stock--cero { background: #f5cfcf; color: var(--rojo); }
+
+/* ---------- Stamp (sello) ---------- */
+.card__sello {
+  position: absolute;
+  top: 1.4rem;
+  right: 1rem;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border: 3px double currentColor;
+  padding: 0.15rem 0.5rem;
+  border-radius: 3px;
+  transform: rotate(-8deg);
+  pointer-events: none;
+}
+
+.card__sello--agotado { color: var(--rojo); }
+.card__sello--bajo { color: #b8860b; }
+
+/* ---------- Codigo de barras decorativo ---------- */
+.card__barras {
+  height: 22px;
+  margin-top: 0.2rem;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--tinta) 0 3px,
+    transparent 3px 6px,
+    var(--tinta) 6px 10px,
+    transparent 10px 12px,
+    var(--tinta) 12px 14px,
+    transparent 14px 19px,
+    var(--tinta) 19px 22px,
+    transparent 22px 25px,
+    var(--tinta) 25px 27px
+  );
+  opacity: 0.85;
+}
+
+/* ---------- Estado vacio ---------- */
+.vacio {
+  text-align: center;
+  font-family: var(--mono);
+  color: var(--tinta-suave);
+  border: 2px dashed var(--tinta-suave);
+  border-radius: 6px;
+  padding: 2.5rem 1rem;
+  margin-top: 1rem;
+}
+
+/* ---------- Pie ---------- */
+.pie {
+  border-top: 2px dashed var(--tinta-suave);
+  padding: 1rem;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--tinta-suave);
+  background: rgba(244, 236, 217, 0.85);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 520px) {
+  .grilla { grid-template-columns: 1fr; }
+  .panel-filtros { padding: 0.8rem; }
+}

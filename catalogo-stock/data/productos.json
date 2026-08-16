@@ -1,0 +1,82 @@
+[
+  {
+    "id": "PRD-001",
+    "nombre": "Lampara de mesa vintage",
+    "categoria": "Iluminacion",
+    "precio": 12500,
+    "stock": 12,
+    "minStock": 5,
+    "imagen": "images/lampara-vintage.jpg",
+    "descripcion": "Lampara de mesa de bronce con pantalla de lino."
+  },
+  {
+    "id": "PRD-002",
+    "nombre": "Sillon de lectura",
+    "categoria": "Muebles",
+    "precio": 89000,
+    "stock": 2,
+    "minStock": 3,
+    "imagen": "",
+    "descripcion": "Sillon tapizado en terciopelo verde esmeralda."
+  },
+  {
+    "id": "PRD-003",
+    "nombre": "Estante de roble",
+    "categoria": "Muebles",
+    "precio": 45000,
+    "stock": 0,
+    "minStock": 2,
+    "imagen": "",
+    "descripcion": "Estante de roble macizo, 5 baldas, sin tratar."
+  },
+  {
+    "id": "PRD-004",
+    "nombre": "Velas de soja - Lavanda",
+    "categoria": "Decoracion",
+    "precio": 3200,
+    "stock": 40,
+    "minStock": 10,
+    "imagen": "",
+    "descripcion": "Caja de 3 velas de soja aroma lavanda."
+  },
+  {
+    "id": "PRD-005",
+    "nombre": "Maceta ceramica terracota",
+    "categoria": "Decoracion",
+    "precio": 6800,
+    "stock": 8,
+    "minStock": 6,
+    "imagen": "",
+    "descripcion": "Maceta de ceramica artesanal, 20cm de diametro."
+  },
+  {
+    "id": "PRD-006",
+    "nombre": "Alfombra kilim",
+    "categoria": "Textiles",
+    "precio": 64000,
+    "stock": 1,
+    "minStock": 2,
+    "imagen": "",
+    "descripcion": "Alfombra tejida a mano, disenos geometricos."
+  },
+  {
+    "id": "PRD-007",
+    "nombre": "Soporte de libros en L",
+    "categoria": "Accesorios",
+    "precio": 2100,
+    "stock": 55,
+    "minStock": 15,
+    "imagen": "",
+    "descripcion": "Soporte metalico negro, juego de 2."
+  },
+  {
+    "id": "PRD-008",
+    "nombre": "Espejo de marco dorado",
+    "categoria": "Decoracion",
+    "precio": 27300,
+    "stock": 0,
+    "minStock": 4,
+    "imagen": "",
+    "descripcion": "Espejo ovalado con marco dorado, 60x80cm."
+  }
+]

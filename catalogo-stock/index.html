@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catalogo de Stock</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="cabecera">
+    <div class="cabecera__interior">
+      <p class="cabecera__codigo">MARQUEZ PLACE // INVENTARIO</p>
+      <h1 class="cabecera__titulo">Catalogo de Stock</h1>
+      <p class="cabecera__subtitulo">Actualizado el <span id="fecha">-</span> &middot; edita solo <code>data/productos.json</code></p>
+
+      <div class="resumen" id="resumen">
+        <div class="resumen__item">
+          <span class="resumen__num" id="resumenTotal">0</span>
+          <span class="resumen__label">Productos</span>
+        </div>
+        <div class="resumen__item">
+          <span class="resumen__num" id="resumenAgotados">0</span>
+          <span class="resumen__label">Agotados</span>
+        </div>
+        <div class="resumen__item">
+          <span class="resumen__num" id="resumenBajo">0</span>
+          <span class="resumen__label">Stock bajo</span>
+        </div>
+        <div class="resumen__item">
+          <span class="resumen__num" id="resumenValor">0</span>
+          <span class="resumen__label">Valor total</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="contenido">
+    <div class="panel-filtros">
+      <div class="busqueda">
+        <label class="busqueda__label" for="buscador">Buscar producto</label>
+        <input
+          class="busqueda__input"
+          type="search"
+          id="buscador"
+          placeholder="Escribi nombre, categoria o codigo..."
+          autocomplete="off">
+      </div>
+
+      <div class="filtros">
+        <span class="filtros__label">Estado</span>
+        <div class="filtros__grupo" id="filtrosEstado"></div>
+
+        <span class="filtros__label">Categoria</span>
+        <div class="filtros__grupo" id="filtrosCategoria"></div>
+      </div>
+    </div>
+
+    <p class="resultado" id="contador"></p>
+
+    <section class="grilla" id="grilla" aria-live="polite"></section>
+
+    <div class="vacio" id="vacio" hidden>
+      <p>Sin resultados para el filtro actual.</p>
+    </div>
+  </main>
+
+  <footer class="pie">
+    <p>Generado con <span class="pie__codigo">catalogo-stock</span> &middot; para actualizar stock edita <code>data/productos.json</code></p>
+  </footer>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
