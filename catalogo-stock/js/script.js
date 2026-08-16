@@ -1,267 +1,165 @@
-(function () {
-  "use strict";
+// ---------------------------------------------------------------
+// Configuración rápida: cambiá esto y el sitio se ajusta solo.
+// ---------------------------------------------------------------
+const BRAND_NAME = "MÁRQUEZ PLACE";
+const DATA_URL = "data/productos.json";
+const CURRENCY = "ARS";
 
-  const URL_DATOS = "data/productos.json";
+// Paleta rotativa para el placeholder de imagen cuando el producto
+// todavía no tiene foto cargada.
+const PLACEHOLDER_COLORS = ["#FF4D00", "#2E6F4E", "#3A5AA8", "#B3492D", "#8A5CC7", "#C77A2E"];
 
-  const estado = {
-    productos: [],
-    categoria: "Todas",
-    stockFiltro: "todos",
-    busqueda: ""
-  };
+let allProducts = [];
+let activeCategory = "Todos";
+let searchTerm = "";
 
-  const $ = (id) => document.getElementById(id);
+const $ = (id) => document.getElementById(id);
 
-  const grilla = $("grilla");
-  const contador = $("contador");
-  const vacio = $("vacio");
-  const buscador = $("buscador");
-  const filtrosEstado = $("filtrosEstado");
-  const filtrosCategoria = $("filtrosCategoria");
+document.addEventListener("DOMContentLoaded", () => {
+  $("brand-name").textContent = BRAND_NAME;
+  $("today").textContent = new Date()
+    .toLocaleDateString("es-AR", { weekday: "short", day: "2-digit", month: "short" })
+    .toUpperCase();
+  init();
+});
 
-  const formatPrecio = new Intl.NumberFormat("es-AR", {
+async function init() {
+  try {
+    const res = await fetch(DATA_URL);
+    if (!res.ok) throw new Error("No se pudo cargar el catálogo");
+    allProducts = await res.json();
+  } catch (err) {
+    $("product-grid").innerHTML =
+      `<p class="empty-state">No pudimos cargar el catálogo. Revisá que data/productos.json exista.</p>`;
+    console.error(err);
+    return;
+  }
+
+  $("total-items").textContent = allProducts.length;
+  renderChips();
+  renderGrid();
+
+  const searchInput = $("search-input");
+  searchInput.addEventListener("input", (e) => {
+    searchTerm = e.target.value.trim().toLowerCase();
+    renderGrid();
+  });
+
+  searchInput.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      searchInput.value = "";
+      searchTerm = "";
+      renderGrid();
+    }
+  });
+}
+
+function renderChips() {
+  const counts = allProducts.reduce((acc, p) => {
+    acc[p.categoria] = (acc[p.categoria] || 0) + 1;
+    return acc;
+  }, {});
+
+  const categories = ["Todos", ...new Set(allProducts.map((p) => p.categoria))];
+  const chipRow = $("category-chips");
+  chipRow.innerHTML = "";
+
+  categories.forEach((cat) => {
+    const chip = document.createElement("button");
+    chip.className = "chip" + (cat === activeCategory ? " active" : "");
+    chip.setAttribute("role", "tab");
+    chip.setAttribute("aria-selected", cat === activeCategory);
+    const count = cat === "Todos" ? allProducts.length : counts[cat];
+    chip.innerHTML = `${escapeHtml(cat)} <span class="chip-count">${count}</span>`;
+    chip.addEventListener("click", () => {
+      activeCategory = cat;
+      renderChips();
+      renderGrid();
+    });
+    chipRow.appendChild(chip);
+  });
+}
+
+function renderGrid() {
+  const grid = $("product-grid");
+  const emptyState = $("empty-state");
+  const resultCount = $("result-count");
+
+  grid.classList.remove("ready");
+
+  const filtered = allProducts.filter((p) => {
+    const matchesCategory = activeCategory === "Todos" || p.categoria === activeCategory;
+    const matchesSearch = !searchTerm || p.nombre.toLowerCase().includes(searchTerm);
+    return matchesCategory && matchesSearch;
+  });
+
+  resultCount.textContent = `${filtered.length} ${filtered.length === 1 ? "PRODUCTO" : "PRODUCTOS"}`;
+
+  grid.innerHTML = "";
+
+  if (filtered.length === 0) {
+    emptyState.hidden = false;
+    return;
+  }
+  emptyState.hidden = true;
+
+  filtered.forEach((product, i) => {
+    grid.appendChild(buildCard(product, i));
+  });
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => grid.classList.add("ready"));
+  });
+}
+
+function buildCard(product, index) {
+  const card = document.createElement("article");
+  card.className = "card";
+  card.style.setProperty("--i", index);
+  card.classList.toggle("is-out", !product.stock);
+
+  const color = PLACEHOLDER_COLORS[index % PLACEHOLDER_COLORS.length];
+  const initial = product.nombre.trim().charAt(0).toUpperCase();
+  const letterMarkup = `<span class="card-plate-letter">${initial}</span>`;
+
+  const imageMarkup = product.imagen
+    ? `<img src="${product.imagen}" alt="${escapeHtml(product.nombre)}" loading="lazy"
+         onerror='this.parentElement.innerHTML="${letterMarkup}"; this.parentElement.style.background="${color}";'>`
+    : letterMarkup;
+
+  const priceFormatted = new Intl.NumberFormat("es-AR", {
     style: "currency",
-    currency: "ARS",
-    maximumFractionDigits: 0
-  });
+    currency: CURRENCY,
+    maximumFractionDigits: 0,
+  }).format(product.precio);
 
-  /* ---------- utilidades de stock ---------- */
+  card.innerHTML = `
+    <div class="card-top">
+      <span class="card-sku">${escapeHtml(product.sku || "—")}</span>
+      <span class="card-hole" aria-hidden="true"></span>
+      <span class="card-no">№${String(index + 1).padStart(2, "0")}</span>
+    </div>
+    <div class="card-image" style="background:${product.imagen ? "transparent" : color}">
+      ${imageMarkup}
+    </div>
+    <div class="card-body">
+      <h3 class="card-name">${escapeHtml(product.nombre)}</h3>
+      <span class="card-category">${escapeHtml(product.categoria)}</span>
+      <div class="card-bottom">
+        <span class="card-price">${priceFormatted}</span>
+        <span class="stock-badge ${product.stock ? "in-stock" : "out-stock"}">
+          ${product.stock ? "En stock" : "Agotado"}
+        </span>
+      </div>
+    </div>
+    <div class="card-barcode" aria-hidden="true"></div>
+  `;
 
-  function estadoStock(producto) {
-    if (producto.stock <= 0) return "cero";
-    if (producto.stock <= (producto.minStock || 0)) return "bajo";
-    return "ok";
-  }
+  return card;
+}
 
-  /* ---------- resumen ---------- */
-
-  function actualizarResumen(productos) {
-    $("resumenTotal").textContent = productos.length;
-
-    const agotados = productos.filter((p) => p.stock <= 0).length;
-    const bajo = productos.filter((p) => {
-      const e = estadoStock(p);
-      return e === "bajo";
-    }).length;
-    const valor = productos.reduce((acc, p) => acc + p.stock * p.precio, 0);
-
-    $("resumenAgotados").textContent = agotados;
-    $("resumenBajo").textContent = bajo;
-    $("resumenValor").textContent = formatPrecio.format(valor);
-  }
-
-  /* ---------- filtros ---------- */
-
-  function construirFiltrosCategoria(productos) {
-    const categorias = ["Todas", ...new Set(productos.map((p) => p.categoria))];
-
-    filtrosCategoria.innerHTML = "";
-    categorias.forEach((cat) => {
-      const boton = document.createElement("button");
-      boton.type = "button";
-      boton.className = "btn-filtro" + (cat === "Todas" ? " btn-filtro--activo" : "");
-      boton.textContent = cat;
-      boton.dataset.categoria = cat;
-      boton.addEventListener("click", () => {
-        estado.categoria = cat;
-        filtrosCategoria.querySelectorAll(".btn-filtro").forEach((b) =>
-          b.classList.toggle("btn-filtro--activo", b === boton)
-        );
-        render();
-      });
-      filtrosCategoria.appendChild(boton);
-    });
-  }
-
-  const opcionesEstado = [
-    { valor: "todos", etiqueta: "Todos" },
-    { valor: "ok", etiqueta: "En stock" },
-    { valor: "bajo", etiqueta: "Stock bajo" },
-    { valor: "cero", etiqueta: "Agotados" }
-  ];
-
-  function construirFiltrosEstado() {
-    filtrosEstado.innerHTML = "";
-    opcionesEstado.forEach((op) => {
-      const boton = document.createElement("button");
-      boton.type = "button";
-      boton.className = "btn-filtro" + (op.valor === "todos" ? " btn-filtro--activo" : "");
-      boton.textContent = op.etiqueta;
-      boton.dataset.estado = op.valor;
-      boton.addEventListener("click", () => {
-        estado.stockFiltro = op.valor;
-        filtrosEstado.querySelectorAll(".btn-filtro").forEach((b) =>
-          b.classList.toggle("btn-filtro--activo", b === boton)
-        );
-        render();
-      });
-      filtrosEstado.appendChild(boton);
-    });
-  }
-
-  function aplicarFiltros() {
-    const texto = estado.busqueda.trim().toLowerCase();
-
-    return estado.productos.filter((p) => {
-      const coincideCategoria =
-        estado.categoria === "Todas" || p.categoria === estado.categoria;
-      const coincideStock =
-        estado.stockFiltro === "todos" || estadoStock(p) === estado.stockFiltro;
-      const coincideTexto =
-        !texto ||
-        p.nombre.toLowerCase().includes(texto) ||
-        p.categoria.toLowerCase().includes(texto) ||
-        (p.id || "").toLowerCase().includes(texto);
-      return coincideCategoria && coincideStock && coincideTexto;
-    });
-  }
-
-  /* ---------- render ---------- */
-
-  function crearBarras() {
-    const div = document.createElement("div");
-    div.className = "card__barras";
-    div.setAttribute("aria-hidden", "true");
-    return div;
-  }
-
-  function crearImagen(producto) {
-    const img = document.createElement("img");
-    img.className = "card__imagen";
-    if (producto.imagen) {
-      img.src = producto.imagen;
-      img.alt = producto.nombre;
-    } else {
-      img.className += " card__imagen--vacia";
-      img.src = "";
-      img.alt = "";
-      const texto = document.createElement("span");
-      texto.textContent = "sin foto";
-      img.appendChild(texto);
-    }
-    return img;
-  }
-
-  function crearCard(producto) {
-    const card = document.createElement("article");
-    card.className = "card";
-
-    const interior = document.createElement("div");
-    interior.className = "card__interior";
-
-    const codigo = document.createElement("p");
-    codigo.className = "card__codigo";
-    codigo.textContent = producto.id || "SIN CODIGO";
-
-    const nombre = document.createElement("h2");
-    nombre.className = "card__nombre";
-    nombre.textContent = producto.nombre;
-
-    if (producto.descripcion) {
-      const desc = document.createElement("p");
-      desc.className = "card__descripcion";
-      desc.textContent = producto.descripcion;
-      interior.appendChild(desc);
-    }
-
-    const meta = document.createElement("div");
-    meta.className = "card__meta";
-
-    const precio = document.createElement("span");
-    precio.className = "card__precio";
-    precio.textContent = formatPrecio.format(producto.precio);
-
-    const categoria = document.createElement("span");
-    categoria.className = "card__categoria";
-    categoria.textContent = producto.categoria;
-
-    meta.appendChild(precio);
-    meta.appendChild(categoria);
-
-    const stock = document.createElement("span");
-    const e = estadoStock(producto);
-    stock.className = "card__stock card__stock--" + e;
-    stock.textContent =
-      e === "cero"
-        ? "SIN STOCK"
-        : e === "bajo"
-          ? "STOCK BAJO: " + producto.stock
-          : "EN STOCK: " + producto.stock;
-
-    interior.prepend(nombre);
-    interior.prepend(codigo);
-    if (producto.imagen) {
-      interior.prepend(crearImagen(producto));
-    }
-    interior.appendChild(meta);
-    interior.appendChild(stock);
-    interior.appendChild(crearBarras());
-
-    card.appendChild(interior);
-
-    if (e === "cero") {
-      const sello = document.createElement("span");
-      sello.className = "card__sello card__sello--agotado";
-      sello.textContent = "Agotado";
-      card.appendChild(sello);
-    } else if (e === "bajo") {
-      const sello = document.createElement("span");
-      sello.className = "card__sello card__sello--bajo";
-      sello.textContent = "Reponer";
-      card.appendChild(sello);
-    }
-
-    return card;
-  }
-
-  function render() {
-    const visibles = aplicarFiltros();
-
-    grilla.innerHTML = "";
-    visibles.forEach((p) => grilla.appendChild(crearCard(p)));
-
-    vacio.hidden = visibles.length !== 0;
-
-    const total = estado.productos.length;
-    contador.innerHTML =
-      total === visibles.length
-        ? "Mostrando <strong>" + total + "</strong> productos"
-        : "Mostrando <strong>" + visibles.length + "</strong> de <strong>" + total + "</strong> productos";
-
-    actualizarResumen(estado.productos);
-  }
-
-  /* ---------- arranque ---------- */
-
-  async function iniciar() {
-    $("fecha").textContent = new Date().toLocaleDateString("es-AR", {
-      year: "numeric",
-      month: "long",
-      day: "numeric"
-    });
-
-    try {
-      const res = await fetch(URL_DATOS);
-      if (!res.ok) throw new Error("HTTP " + res.status);
-      estado.productos = await res.json();
-    } catch (err) {
-      console.error("No se pudo cargar " + URL_DATOS, err);
-      grilla.innerHTML =
-        '<div class="vacio">No se pudo cargar <code>data/productos.json</code>. ' +
-        "Recorda servir el sitio con un servidor local (ej: <code>python3 -m http.server</code>).</div>";
-      vacio.hidden = true;
-      return;
-    }
-
-    construirFiltrosCategoria(estado.productos);
-    construirFiltrosEstado();
-    render();
-  }
-
-  buscador.addEventListener("input", (e) => {
-    estado.busqueda = e.target.value;
-    render();
-  });
-
-  iniciar();
-})();
+function escapeHtml(str) {
+  const div = document.createElement("div");
+  div.textContent = str;
+  return div.innerHTML;
+}
