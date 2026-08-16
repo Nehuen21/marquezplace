@@ -1,82 +1,82 @@
 [
   {
-    "id": "PRD-001",
-    "nombre": "Lampara de mesa vintage",
-    "categoria": "Iluminacion",
+    "sku": "ROP-001",
+    "nombre": "Campera Puffer Negra",
+    "categoria": "Ropa",
+    "precio": 42000,
+    "stock": true,
+    "imagen": ""
+  },
+  {
+    "sku": "ROP-002",
+    "nombre": "Remera Oversize Blanca",
+    "categoria": "Ropa",
     "precio": 12500,
-    "stock": 12,
-    "minStock": 5,
-    "imagen": "images/lampara-vintage.jpg",
-    "descripcion": "Lampara de mesa de bronce con pantalla de lino."
+    "stock": true,
+    "imagen": ""
   },
   {
-    "id": "PRD-002",
-    "nombre": "Sillon de lectura",
-    "categoria": "Muebles",
-    "precio": 89000,
-    "stock": 2,
-    "minStock": 3,
-    "imagen": "",
-    "descripcion": "Sillon tapizado en terciopelo verde esmeralda."
+    "sku": "ROP-003",
+    "nombre": "Buzo Canguro Gris",
+    "categoria": "Ropa",
+    "precio": 21000,
+    "stock": false,
+    "imagen": ""
   },
   {
-    "id": "PRD-003",
-    "nombre": "Estante de roble",
-    "categoria": "Muebles",
-    "precio": 45000,
-    "stock": 0,
-    "minStock": 2,
-    "imagen": "",
-    "descripcion": "Estante de roble macizo, 5 baldas, sin tratar."
+    "sku": "ACC-001",
+    "nombre": "Mochila Urbana 20L",
+    "categoria": "Mochilas",
+    "precio": 34000,
+    "stock": true,
+    "imagen": ""
   },
   {
-    "id": "PRD-004",
-    "nombre": "Velas de soja - Lavanda",
-    "categoria": "Decoracion",
-    "precio": 3200,
-    "stock": 40,
-    "minStock": 10,
-    "imagen": "",
-    "descripcion": "Caja de 3 velas de soja aroma lavanda."
+    "sku": "ACC-002",
+    "nombre": "Riñonera Impermeable",
+    "categoria": "Mochilas",
+    "precio": 15800,
+    "stock": true,
+    "imagen": ""
   },
   {
-    "id": "PRD-005",
-    "nombre": "Maceta ceramica terracota",
-    "categoria": "Decoracion",
-    "precio": 6800,
-    "stock": 8,
-    "minStock": 6,
-    "imagen": "",
-    "descripcion": "Maceta de ceramica artesanal, 20cm de diametro."
+    "sku": "BOT-001",
+    "nombre": "Botella Térmica 1L",
+    "categoria": "Botellas",
+    "precio": 9800,
+    "stock": true,
+    "imagen": ""
   },
   {
-    "id": "PRD-006",
-    "nombre": "Alfombra kilim",
-    "categoria": "Textiles",
-    "precio": 64000,
-    "stock": 1,
-    "minStock": 2,
-    "imagen": "",
-    "descripcion": "Alfombra tejida a mano, disenos geometricos."
+    "sku": "BOT-002",
+    "nombre": "Botella Deportiva 750ml",
+    "categoria": "Botellas",
+    "precio": 6200,
+    "stock": false,
+    "imagen": ""
   },
   {
-    "id": "PRD-007",
-    "nombre": "Soporte de libros en L",
-    "categoria": "Accesorios",
-    "precio": 2100,
-    "stock": 55,
-    "minStock": 15,
-    "imagen": "",
-    "descripcion": "Soporte metalico negro, juego de 2."
+    "sku": "TEC-001",
+    "nombre": "Cargador Rápido 30W",
+    "categoria": "Tecnología",
+    "precio": 11500,
+    "stock": true,
+    "imagen": ""
   },
   {
-    "id": "PRD-008",
-    "nombre": "Espejo de marco dorado",
-    "categoria": "Decoracion",
-    "precio": 27300,
-    "stock": 0,
-    "minStock": 4,
-    "imagen": "",
-    "descripcion": "Espejo ovalado con marco dorado, 60x80cm."
+    "sku": "TEC-002",
+    "nombre": "Cable USB-C Trenzado",
+    "categoria": "Tecnología",
+    "precio": 4200,
+    "stock": true,
+    "imagen": ""
+  },
+  {
+    "sku": "TEC-003",
+    "nombre": "Power Bank 10000mAh",
+    "categoria": "Tecnología",
+    "precio": 18900,
+    "stock": false,
+    "imagen": ""
   }
 ]
