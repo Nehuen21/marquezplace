@@ -9,8 +9,12 @@ const CURRENCY = "ARS";
 // todavía no tiene foto cargada.
 const PLACEHOLDER_COLORS = ["#FF4D00", "#2E6F4E", "#3A5AA8", "#B3492D", "#8A5CC7", "#C77A2E"];
 
+// Categorías que admiten filtro por talle
+const TALLE_CATEGORIES = ["Ropa", "Calzado"];
+
 let allProducts = [];
 let activeCategory = "Todos";
+let activeTalle = "";
 let searchTerm = "";
 
 const $ = (id) => document.getElementById(id);
@@ -37,6 +41,7 @@ async function init() {
 
   $("total-items").textContent = allProducts.length;
   renderChips();
+  renderTalleChips();
   renderGrid();
 
   const searchInput = $("search-input");
@@ -73,10 +78,68 @@ function renderChips() {
     chip.innerHTML = `${escapeHtml(cat)} <span class="chip-count">${count}</span>`;
     chip.addEventListener("click", () => {
       activeCategory = cat;
+      activeTalle = "";
       renderChips();
+      renderTalleChips();
       renderGrid();
     });
     chipRow.appendChild(chip);
+  });
+}
+
+function renderTalleChips() {
+  const talleRow = $("talle-chips");
+
+  if (!TALLE_CATEGORIES.includes(activeCategory)) {
+    talleRow.hidden = true;
+    talleRow.innerHTML = "";
+    return;
+  }
+
+  const categoryProducts = allProducts.filter((p) => p.categoria === activeCategory);
+  const talleCounts = categoryProducts.reduce((acc, p) => {
+    if (p.talle) acc[p.talle] = (acc[p.talle] || 0) + 1;
+    return acc;
+  }, {});
+
+  const talles = Object.keys(talleCounts);
+  if (talles.length === 0) {
+    talleRow.hidden = true;
+    return;
+  }
+
+  talleRow.hidden = false;
+  talleRow.innerHTML = "";
+
+  const label = document.createElement("span");
+  label.className = "chip-label";
+  label.textContent = "TALLE ▸";
+  talleRow.appendChild(label);
+
+  const allChip = document.createElement("button");
+  allChip.className = "chip" + (activeTalle === "" ? " active" : "");
+  allChip.setAttribute("role", "tab");
+  allChip.setAttribute("aria-selected", activeTalle === "");
+  allChip.innerHTML = `Todos <span class="chip-count">${categoryProducts.length}</span>`;
+  allChip.addEventListener("click", () => {
+    activeTalle = "";
+    renderTalleChips();
+    renderGrid();
+  });
+  talleRow.appendChild(allChip);
+
+  talles.forEach((talle) => {
+    const chip = document.createElement("button");
+    chip.className = "chip" + (talle === activeTalle ? " active" : "");
+    chip.setAttribute("role", "tab");
+    chip.setAttribute("aria-selected", talle === activeTalle);
+    chip.innerHTML = `${escapeHtml(talle)} <span class="chip-count">${talleCounts[talle]}</span>`;
+    chip.addEventListener("click", () => {
+      activeTalle = talle;
+      renderTalleChips();
+      renderGrid();
+    });
+    talleRow.appendChild(chip);
   });
 }
 
@@ -90,7 +153,8 @@ function renderGrid() {
   const filtered = allProducts.filter((p) => {
     const matchesCategory = activeCategory === "Todos" || p.categoria === activeCategory;
     const matchesSearch = !searchTerm || p.nombre.toLowerCase().includes(searchTerm);
-    return matchesCategory && matchesSearch;
+    const matchesTalle = !activeTalle || p.talle === activeTalle;
+    return matchesCategory && matchesSearch && matchesTalle;
   });
 
   resultCount.textContent = `${filtered.length} ${filtered.length === 1 ? "PRODUCTO" : "PRODUCTOS"}`;
@@ -133,6 +197,10 @@ function buildCard(product, index) {
     maximumFractionDigits: 0,
   }).format(product.precio);
 
+  const talleMarkup = product.talle
+    ? `<span class="card-talle">${escapeHtml(product.talle)}</span>`
+    : "";
+
   card.innerHTML = `
     <div class="card-top">
       <span class="card-sku">${escapeHtml(product.sku || "—")}</span>
@@ -144,7 +212,10 @@ function buildCard(product, index) {
     </div>
     <div class="card-body">
       <h3 class="card-name">${escapeHtml(product.nombre)}</h3>
-      <span class="card-category">${escapeHtml(product.categoria)}</span>
+      <div class="card-meta">
+        <span class="card-category">${escapeHtml(product.categoria)}</span>
+        ${talleMarkup}
+      </div>
       <div class="card-bottom">
         <span class="card-price">${priceFormatted}</span>
         <span class="stock-badge ${product.stock ? "in-stock" : "out-stock"}">
