@@ -5,7 +5,7 @@
     "categoria": "Ropa",
     "precio": 42000,
     "stock": true,
-    "imagen": ""
+    "imagen": "images/campera-puffer-negra.png"
   },
   {
     "sku": "ROP-002",
