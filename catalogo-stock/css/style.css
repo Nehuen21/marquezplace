@@ -379,6 +379,23 @@ body::after {
 
 .chip.active .chip-count { color: var(--color-signal-soft); }
 
+/* --- Talle: label y row --- */
+.chip-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-ink-soft);
+  align-self: center;
+}
+
+.talle-row {
+  border-bottom: none;
+  margin-top: 0.6rem;
+  padding-bottom: 0;
+}
+
 /* =========================================================
    Grid de productos
    ========================================================= */
@@ -535,6 +552,26 @@ body::after {
   content: "▪";
   color: var(--color-signal);
   margin-right: 0.4rem;
+}
+
+/* --- Talle en la card --- */
+.card-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.card-talle {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-paper);
+  background: var(--color-ink);
+  padding: 2px 7px;
+  border-radius: 2px;
 }
 
 .card-bottom {

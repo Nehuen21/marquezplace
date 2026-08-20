@@ -5,7 +5,8 @@
     "categoria": "Ropa",
     "precio": 42000,
     "stock": true,
-    "imagen": "images/campera-puffer-negra.png"
+    "imagen": "images/campera-puffer-negra.png",
+    "talle": "L"
   },
   {
     "sku": "ROP-002",
@@ -13,7 +14,8 @@
     "categoria": "Ropa",
     "precio": 12500,
     "stock": true,
-    "imagen": ""
+    "imagen": "",
+    "talle": "M"
   },
   {
     "sku": "ROP-003",
@@ -21,7 +23,8 @@
     "categoria": "Ropa",
     "precio": 21000,
     "stock": false,
-    "imagen": ""
+    "imagen": "",
+    "talle": "XL"
   },
   {
     "sku": "ACC-001",
